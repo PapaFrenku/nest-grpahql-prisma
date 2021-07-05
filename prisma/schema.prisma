@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id    Int     @default(autoincrement()) @id
+  email String  @unique
+  password  String?
+}
+
+model ProductCharacteristic {
+  name  String 
+  value String
+  product Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@id([name, value])
+}
+
+model Product {
+  id              Int      @default(autoincrement()) @id
+  image           String
+  title           String
+  link            String
+  initialRating   Int
+  price           Int
+  oldPrice        Int?
+  credit          Int?
+  description     String
+  advantages      String?
+  disAdvantages   String?
+  categories      String[]
+  tags            String[]
+  characteristics ProductCharacteristic[]
+  reviews         Review[]
+}
+
+model Review {
+  id  Int      @default(autoincrement()) @id
+  title String
+  name String
+  description String
+  rating Int
+  product Product @relation(fields: [productId], references: [id])
+  productId Int
+}
+
+enum TopLevelCategory {
+  Courses
+  Services
+  Books
+}
+
+model HhData {
+  id Int @default(autoincrement()) @id
+  count Int
+  juniorSalary Int?
+  middleSalary Int?
+  seniorSalary Int?
+  updatedAt DateTime @updatedAt
+  topPageId Int?
+  topPage TopPage? @relation(fields: [topPageId], references: [id])
+}
+
+model TopPageAdvantage {
+  title String
+  description String
+
+  @@id([title, description])
+
+  topPageId Int
+  topPage TopPage @relation(fields: [topPageId], references: [id])
+}
+
+model TopPage {
+  id  Int      @default(autoincrement()) @id
+  firstCategory TopLevelCategory
+  secondCategory String
+  alias   String  @unique
+  title   String
+  metaTitle String
+  metaDescription String
+  category  String
+  hh HhData?
+  advantages  TopPageAdvantage[]
+  seoText  String
+  tagsTitle String
+  tags String[]
+}

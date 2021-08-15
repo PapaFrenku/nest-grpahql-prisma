@@ -1,0 +1,220 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AccesToken {
+  access_token: String!
+}
+
+type UserEntity {
+  id: String!
+  email: String!
+  password: String!
+}
+
+type HhData {
+  count: Int!
+  juniorSalary: Int!
+  middleSalary: Int!
+  seniorSalary: Int!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type TopPageAdvantage {
+  title: String!
+  description: String!
+}
+
+type TopPageEntity {
+  id: Int!
+  firstCategory: TopLevelCategory!
+  secondCategory: String!
+  alias: String!
+  title: String!
+  metaTitle: String!
+  metaDescription: String!
+  category: String!
+  hh: HhData!
+  advantages: [TopPageAdvantage!]!
+  seoText: String!
+  tagsTitle: String!
+  tags: [String!]!
+  products: [Product!]!
+  createdAt: DateTime!
+}
+
+enum TopLevelCategory {
+  Courses
+  Services
+  Books
+}
+
+type Product {
+  id: Int!
+  image: String
+  title: String!
+  link: String
+  initialRating: Int!
+  price: Int!
+  oldPrice: Int
+  credit: Int!
+  description: String
+  advantages: [String]!
+  disAdvantages: [String]!
+  categories: [String]!
+  tags: [String]!
+  characteristics: [ProductCharacteristic]
+  reviews: [Review!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  reviewAvg: Float!
+  firstCategory: TopLevelCategory!
+}
+
+type ProductCharacteristic {
+  id: Int!
+  name: String!
+  value: String!
+  product: Product!
+  productId: Int!
+}
+
+type Review {
+  id: Int!
+  title: String!
+  name: String!
+  description: String!
+  rating: Int!
+  productId: String!
+  product: Product!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type FileEntity {
+  filename: String!
+}
+
+type Query {
+  user(email: String!): UserEntity!
+  product(id: Float!): Product!
+  products(findAllProductDto: FindAllProductDto!): [Product!]!
+  findProductsByText(query: String!): [Product!]!
+  getAllTopPages: [TopPageEntity!]!
+  getTopPageByAlias(alias: String!): TopPageEntity!
+  getTopPage(id: Float!): TopPageEntity!
+  findByCategory(findTopPageDto: FindTopPageDto!): [TopPageEntity!]!
+  findByText(searchQuery: String!): [TopPageEntity!]!
+}
+
+input FindAllProductDto {
+  skip: Float
+  take: Float
+}
+
+input FindTopPageDto {
+  firstCategory: TopLevelCategory!
+}
+
+type Mutation {
+  register(authDto: AuthDto!): UserEntity!
+  login(authDto: AuthDto!): AccesToken!
+  createProduct(createProductDto: CreateProductDto!): Product!
+  deleteProduct(id: Float!): Product!
+  updateProduct(updateProductDto: UpdateProductDto!, id: Float!): Product!
+  postReview(postReviewDto: PostRevieDto!): Product!
+  createTopPage(createTopPageDto: CreateTopPageDto!): TopPageEntity!
+  deleteTopPage(id: Float!): TopPageEntity!
+  updateTopPage(createTopPageDto: CreateTopPageDto!, id: Float!): TopPageEntity!
+  singleUpload(file: Upload!): FileEntity!
+}
+
+input AuthDto {
+  email: String!
+  password: String!
+}
+
+input CreateProductDto {
+  image: String
+  title: String!
+  link: String
+  initialRating: Int!
+  price: Int!
+  oldPrice: Int
+  credit: Int!
+  description: String
+  advantages: [String]
+  disAdvantages: [String]
+  categories: [String]!
+  firstCategory: TopLevelCategory!
+  tags: [String]!
+  characteristics: [ProductCharacteristicDto]
+}
+
+input ProductCharacteristicDto {
+  name: String!
+  value: String!
+}
+
+input UpdateProductDto {
+  image: String
+  title: String
+  link: String
+  initialRating: Int
+  price: Int
+  oldPrice: Int
+  credit: Int
+  description: String
+  advantages: [String]
+  disAdvantages: [String]
+  categories: [String]
+  tags: [String]
+  characteristics: [ProductCharacteristicDto]
+}
+
+input PostRevieDto {
+  title: String!
+  name: String!
+  description: String!
+  rating: Int!
+  productId: Float!
+}
+
+input CreateTopPageDto {
+  firstCategory: TopLevelCategory!
+  secondCategory: String!
+  alias: String!
+  title: String!
+  metaTitle: String!
+  metaDescription: String!
+  category: String!
+  hh: HhDataDto
+  advantages: [TopPageAdvantageDto!]!
+  seoText: String!
+  tagsTitle: String!
+  tags: [String!]!
+}
+
+input HhDataDto {
+  count: Int!
+  juniorSalary: Int!
+  middleSalary: Int!
+  seniorSalary: Int!
+}
+
+input TopPageAdvantageDto {
+  title: String!
+  description: String!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+type Subscription {
+  reviewAdded(id: Float!): Product!
+}

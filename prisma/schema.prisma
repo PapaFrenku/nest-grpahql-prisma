@@ -7,7 +7,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js" 
+  previewFeatures = ["referentialActions"]
 }
 
 model User {
@@ -17,30 +18,32 @@ model User {
 }
 
 model ProductCharacteristic {
-  name  String 
-  value String
-  product Product @relation(fields: [productId], references: [id])
-  productId Int
-
-  @@id([name, value])
+  id              Int      @default(autoincrement()) @id
+  name            String
+  value           String
+  product         Product @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  productId       Int
 }
 
 model Product {
   id              Int      @default(autoincrement()) @id
-  image           String
+  image           String?
   title           String
-  link            String
+  link            String?
   initialRating   Int
   price           Int
   oldPrice        Int?
   credit          Int?
-  description     String
-  advantages      String?
-  disAdvantages   String?
+  description     String?
+  advantages      String[]
+  disAdvantages   String[]
   categories      String[]
   tags            String[]
   characteristics ProductCharacteristic[]
   reviews         Review[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt @default(now())
+  firstCategory   TopLevelCategory @default(Courses)
 }
 
 model Review {
@@ -49,8 +52,10 @@ model Review {
   name String
   description String
   rating Int
-  product Product @relation(fields: [productId], references: [id])
+  product Product @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   productId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 enum TopLevelCategory {
@@ -60,38 +65,36 @@ enum TopLevelCategory {
 }
 
 model HhData {
-  id Int @default(autoincrement()) @id
-  count Int
-  juniorSalary Int?
-  middleSalary Int?
-  seniorSalary Int?
-  updatedAt DateTime @updatedAt
-  topPageId Int?
-  topPage TopPage? @relation(fields: [topPageId], references: [id])
+  id            Int @default(autoincrement()) @id
+  count         Int
+  juniorSalary  Int?
+  middleSalary  Int?
+  seniorSalary  Int?
+  updatedAt     DateTime @updatedAt @default(now())
+  topPageId     Int?
+  topPage       TopPage? @relation(fields: [topPageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model TopPageAdvantage {
-  title String
+  title       String @id
   description String
-
-  @@id([title, description])
-
-  topPageId Int
-  topPage TopPage @relation(fields: [topPageId], references: [id])
+  topPageId   Int
+  topPage     TopPage @relation(fields: [topPageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model TopPage {
-  id  Int      @default(autoincrement()) @id
-  firstCategory TopLevelCategory
-  secondCategory String
-  alias   String  @unique
-  title   String
-  metaTitle String
+  id  Int         @default(autoincrement()) @id
+  firstCategory   TopLevelCategory
+  secondCategory  String
+  alias           String  @unique
+  title           String
+  metaTitle       String
   metaDescription String
-  category  String
-  hh HhData?
-  advantages  TopPageAdvantage[]
-  seoText  String
-  tagsTitle String
-  tags String[]
+  category        String
+  hh              HhData?
+  advantages      TopPageAdvantage[]
+  seoText         String?
+  tagsTitle       String
+  tags            String[]
+  createdAt       DateTime @default(now())
 }

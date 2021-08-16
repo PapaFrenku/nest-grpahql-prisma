@@ -34,6 +34,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 uploads/*
+!uploads/index.html
 
 !uploads/.gitkeep
 .env*

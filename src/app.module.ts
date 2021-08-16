@@ -34,7 +34,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       },
       uploads: false,
       bodyParserConfig: {},
-      introspection: process.env.NODE_ENV !== 'production'
+      introspection: false
     }),
     ConfigModule.forRoot({
       load: [mainConfiguration]

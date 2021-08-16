@@ -19,9 +19,9 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'uploads'),
+    // }),
     GraphQLModule.forRoot({
       autoSchemaFile: join(cwd(), 'src/schema.gql'),
       debug: true,
@@ -33,7 +33,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
         path: '/subscriptions',
       },
       uploads: false,
-      bodyParserConfig: {}
+      bodyParserConfig: {},
+      introspection: process.env.NODE_ENV !== 'production'
     }),
     ConfigModule.forRoot({
       load: [mainConfiguration]
